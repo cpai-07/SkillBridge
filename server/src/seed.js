@@ -2,7 +2,7 @@
 require("dotenv").config();
 const connectDB = require("./config/db");
 const User = require("./models/User");
-const Job = require("./models/job");
+const Job = require("./models/Job");
 const Application = require("./models/Application");
 const { cleanList } = require("./utils/match");
 
