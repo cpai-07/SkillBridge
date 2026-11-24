@@ -11,7 +11,7 @@ export default function Navbar() {
         <Link to="/" className="brand">
           SkillBridge
         </Link>
-        <nav className="nav-links">
+        <nav className="nav-links" aria-label="Main">
           <NavLink to="/jobs">Jobs</NavLink>
           {user?.role === "candidate" && (
             <>

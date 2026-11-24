@@ -1,4 +1,5 @@
 // matched = skills you have, missing = skills you lack, skills = neutral list
+
 export default function SkillChips({
   matched = [],
   missing = [],
@@ -7,12 +8,14 @@ export default function SkillChips({
   return (
     <div className="chips">
       {matched.map((s) => (
-        <span key={s} className="chip have" title="You have this">
+        <span key={s} className="chip have">
+          <span className="sr-only">You have: </span>
           &#10003; {s}
         </span>
       ))}
       {missing.map((s) => (
-        <span key={s} className="chip miss" title="Missing skill">
+        <span key={s} className="chip miss">
+          <span className="sr-only">Missing: </span>
           {s}
         </span>
       ))}

@@ -5,6 +5,7 @@ export default function SkillInput({
   value,
   onChange,
   placeholder = "Type a skill, press Enter",
+  label = "Add a skill",
 }) {
   const [text, setText] = useState("");
 
@@ -33,6 +34,7 @@ export default function SkillInput({
       <input
         value={text}
         placeholder={placeholder}
+        aria-label={label}
         onChange={(e) => setText(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === ",") {
