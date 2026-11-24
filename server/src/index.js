@@ -1,40 +1,24 @@
+// Starts the server. The Express app itself is in app.js,
+// which lets our tests use the app without starting a real server.
+
 require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
+
+const app = require("./app");
 const connectDB = require("./config/db");
 
-const app = express();
-app.use(cors({ origin: process.env.CLIENT_URL || "http://localhost:5173" }));
-app.use(express.json());
-
-app.get("/api/health", (req, res) => res.json({ ok: true }));
-app.use("/api/auth", require("./routes/auth"));
-app.use("/api/jobs", require("./routes/jobs"));
-app.use("/api/applications", require("./routes/applications"));
-
-app.use((req, res) => res.status(404).json({ message: "Route not found" }));
-// eslint-disable-next-line no-unused-vars
-app.use((err, req, res, next) => {
-  console.error(err);
-  if (err.name === "ValidationError")
-    return res
-      .status(400)
-      .json({ message: Object.values(err.errors)[0].message });
-  if (err.name === "CastError")
-    return res.status(404).json({ message: "Not found" });
-  res
-    .status(err.status || 500)
-    .json({ message: err.message || "Server error" });
-});
+// Stop early with a clear message if important settings are missing
+if (!process.env.MONGO_URI || !process.env.JWT_SECRET) {
+  console.error("Missing MONGO_URI or JWT_SECRET. Check your .env file.");
+  process.exit(1);
+}
 
 const PORT = process.env.PORT || 5000;
+
 connectDB()
   .then(() =>
-    app.listen(PORT, () =>
-      console.log(`API running on http://localhost:${PORT}`),
-    ),
+    app.listen(PORT, () => console.log(`API running on port ${PORT}`)),
   )
-  .catch((e) => {
-    console.error("DB connection failed:", e.message);
+  .catch((error) => {
+    console.error("DB connection failed:", error.message);
     process.exit(1);
   });
