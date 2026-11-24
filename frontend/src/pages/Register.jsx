@@ -30,13 +30,18 @@ export default function Register() {
   return (
     <form className="card form narrow" onSubmit={submit}>
       <h2>Create your account</h2>
-      {error && <p className="error">{error}</p>}
-      <div className="segmented" role="radiogroup" aria-label="I am a">
+      {error && (
+        <p className="error" role="alert">
+          {error}
+        </p>
+      )}
+      <div className="segmented" role="group" aria-label="I am a">
         {["candidate", "employer"].map((r) => (
           <button
             type="button"
             key={r}
             className={form.role === r ? "on" : ""}
+            aria-pressed={form.role === r}
             onClick={() => setForm({ ...form, role: r })}
           >
             {r === "candidate" ? "I'm looking for a job" : "I'm hiring"}

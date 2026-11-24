@@ -23,7 +23,11 @@ export default function Login() {
   return (
     <form className="card form narrow" onSubmit={submit}>
       <h2>Log in</h2>
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <p className="error" role="alert">
+          {error}
+        </p>
+      )}
       <label>
         Email
         <input

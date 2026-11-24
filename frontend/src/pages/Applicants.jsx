@@ -1,30 +1,58 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import api from "../api";
+import api, { errMsg } from "../api";
 import MatchMeter from "../components/MatchMeter.jsx";
 import SkillChips from "../components/SkillChips.jsx";
 
 export default function Applicants() {
   const { id } = useParams();
   const [data, setData] = useState(null);
-  const load = () =>
-    api.get(`/applications/job/${id}`).then((r) => setData(r.data));
+  const [error, setError] = useState("");
+  // useCallback keeps the same function between renders (unless the id changes)
+  const load = useCallback(
+    () =>
+      api
+        .get(`/applications/job/${id}`)
+        .then((r) => setData(r.data))
+        .catch((err) => setError(errMsg(err))),
+    [id],
+  );
   useEffect(() => {
     load();
-  }, [id]);
+  }, [load]);
 
   const setStatus = async (appId, status) => {
-    await api.patch(`/applications/${appId}/status`, { status });
-    load();
+    try {
+      await api.patch(`/applications/${appId}/status`, { status });
+      load();
+    } catch (err) {
+      setError(errMsg(err));
+    }
   };
 
-  if (!data) return <p className="muted">Loading...</p>;
+  if (error && !data)
+    return (
+      <p className="error" role="alert">
+        {error}
+      </p>
+    );
+  if (!data)
+    return (
+      <p className="muted" role="status">
+        Loading...
+      </p>
+    );
   return (
     <>
       <p>
         <Link to="/employer/jobs">&larr; Back to my jobs</Link>
       </p>
       <h1>Applicants for {data.job.title}</h1>
+      {error && (
+        <p className="error" role="alert">
+          {error}
+        </p>
+      )}
       <p className="muted">
         Ranked by skill match, best first. Required:{" "}
         {data.job.requiredSkills.join(", ")}

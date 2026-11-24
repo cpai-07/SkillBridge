@@ -1,15 +1,30 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import api from "../api";
+import api, { errMsg } from "../api";
 import MatchMeter from "../components/MatchMeter.jsx";
 
 export default function MyApplications() {
   const [apps, setApps] = useState(null);
+  const [error, setError] = useState("");
   useEffect(() => {
-    api.get("/applications/mine").then((r) => setApps(r.data.applications));
+    api
+      .get("/applications/mine")
+      .then((r) => setApps(r.data.applications))
+      .catch((err) => setError(errMsg(err)));
   }, []);
 
-  if (!apps) return <p className="muted">Loading...</p>;
+  if (error)
+    return (
+      <p className="error" role="alert">
+        {error}
+      </p>
+    );
+  if (!apps)
+    return (
+      <p className="muted" role="status">
+        Loading...
+      </p>
+    );
   return (
     <>
       <h1>My applications</h1>

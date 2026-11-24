@@ -1,21 +1,41 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import api from "../api";
+import api, { errMsg } from "../api";
 
 export default function EmployerJobs() {
   const [jobs, setJobs] = useState(null);
-  const load = () => api.get("/jobs/mine").then((r) => setJobs(r.data.jobs));
+  const [error, setError] = useState("");
+  const load = () =>
+    api
+      .get("/jobs/mine")
+      .then((r) => setJobs(r.data.jobs))
+      .catch((err) => setError(errMsg(err)));
   useEffect(() => {
     load();
   }, []);
 
   const remove = async (id) => {
     if (!window.confirm("Delete this job and all its applications?")) return;
-    await api.delete(`/jobs/${id}`);
-    load();
+    try {
+      await api.delete(`/jobs/${id}`);
+      load();
+    } catch (err) {
+      setError(errMsg(err));
+    }
   };
 
-  if (!jobs) return <p className="muted">Loading...</p>;
+  if (error && !jobs)
+    return (
+      <p className="error" role="alert">
+        {error}
+      </p>
+    );
+  if (!jobs)
+    return (
+      <p className="muted" role="status">
+        Loading...
+      </p>
+    );
   return (
     <>
       <div className="row between">
@@ -24,6 +44,11 @@ export default function EmployerJobs() {
           Post a job
         </Link>
       </div>
+      {error && (
+        <p className="error" role="alert">
+          {error}
+        </p>
+      )}
       {jobs.length === 0 ? (
         <p className="muted">You have not posted any jobs yet.</p>
       ) : (
