@@ -16,8 +16,11 @@ import Applicants from "./pages/Applicants.jsx";
 export default function App() {
   return (
     <>
+      <a href="#main" className="skip-link">
+        Skip to main content
+      </a>
       <Navbar />
-      <main className="container">
+      <main id="main" className="container" tabIndex={-1}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
