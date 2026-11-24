@@ -248,6 +248,6 @@ See [`DEPLOYMENT.md`](DEPLOYMENT.md) for the deployment setup and configuration 
 
 ## Project Documentation
 
-- [`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md) — personas, user stories and project requirements.
+- [`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md) — project requirements.
 - [`docs/use-case-diagram.png`](docs/use-case-diagram.png) — use-case diagram.
 - [`DEPLOYMENT.md`](DEPLOYMENT.md) — cloud deployment instructions.
