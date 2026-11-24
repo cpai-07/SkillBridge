@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import api from "../api";
+import api, { errMsg } from "../api";
 import { useAuth } from "../AuthContext.jsx";
 import JobCard from "../components/JobCard.jsx";
 
@@ -8,6 +8,7 @@ export default function Jobs() {
   const { user } = useAuth();
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [filters, setFilters] = useState({
     search: "",
     location: "",
@@ -19,12 +20,14 @@ export default function Jobs() {
   useEffect(() => {
     const t = setTimeout(() => {
       setLoading(true);
+      setError("");
       const params = Object.fromEntries(
         Object.entries(filters).filter(([, v]) => v),
       );
       api
         .get("/jobs", { params })
         .then((r) => setJobs(r.data.jobs))
+        .catch((err) => setError(errMsg(err)))
         .finally(() => setLoading(false));
     }, 250); // debounce typing
     return () => clearTimeout(t);
@@ -73,9 +76,17 @@ export default function Jobs() {
         )}
       </div>
 
+      {error && (
+        <p className="error" role="alert">
+          {error}
+        </p>
+      )}
+
       {loading ? (
-        <p className="muted">Loading jobs...</p>
-      ) : jobs.length === 0 ? (
+        <p className="muted" role="status">
+          Loading jobs...
+        </p>
+      ) : error ? null : jobs.length === 0 ? (
         <p className="muted">No jobs match your search. Try fewer filters.</p>
       ) : (
         <div className="stack">

@@ -1,17 +1,32 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import api from "../api";
+import api, { errMsg } from "../api";
 import { useAuth } from "../AuthContext.jsx";
 import MatchMeter from "../components/MatchMeter.jsx";
 
 export default function SkillGap() {
   const { user } = useAuth();
   const [data, setData] = useState(null);
+  const [error, setError] = useState("");
   useEffect(() => {
-    api.get("/jobs/skill-gap").then((r) => setData(r.data));
+    api
+      .get("/jobs/skill-gap")
+      .then((r) => setData(r.data))
+      .catch((err) => setError(errMsg(err)));
   }, [user]);
 
-  if (!data) return <p className="muted">Loading...</p>;
+  if (error)
+    return (
+      <p className="error" role="alert">
+        {error}
+      </p>
+    );
+  if (!data)
+    return (
+      <p className="muted" role="status">
+        Loading...
+      </p>
+    );
   const max = data.topMissing[0]?.jobCount || 1;
 
   return (

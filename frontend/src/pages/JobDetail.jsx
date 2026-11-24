@@ -31,8 +31,18 @@ export default function JobDetail() {
     }
   };
 
-  if (error && !job) return <p className="error">{error}</p>;
-  if (!job) return <p className="muted">Loading...</p>;
+  if (error && !job)
+    return (
+      <p className="error" role="alert">
+        {error}
+      </p>
+    );
+  if (!job)
+    return (
+      <p className="muted" role="status">
+        Loading...
+      </p>
+    );
   const applied = done || job.hasApplied;
 
   return (
@@ -77,7 +87,20 @@ export default function JobDetail() {
 
         {user?.role === "candidate" &&
           (applied ? (
-            <p className="success">&#10003; Application sent</p>
+            <div>
+              <p className="success">&#10003; Application sent</p>
+              <p>
+                Status:{" "}
+                <span className={`status ${job.applicationStatus || "applied"}`}>
+                  {job.applicationStatus || "applied"}
+                </span>
+              </p>
+              {job.applicationStatus === "rejected" && (
+                <p className="muted small">
+                  The employer did not shortlist this application.
+                </p>
+              )}
+            </div>
           ) : (
             <form onSubmit={apply} className="form">
               <label>
@@ -88,7 +111,11 @@ export default function JobDetail() {
                   onChange={(e) => setCoverLetter(e.target.value)}
                 />
               </label>
-              {error && <p className="error">{error}</p>}
+              {error && (
+                <p className="error" role="alert">
+                  {error}
+                </p>
+              )}
               <button className="btn">Apply now</button>
             </form>
           ))}

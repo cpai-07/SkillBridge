@@ -44,7 +44,11 @@ export default function JobForm() {
   return (
     <form className="card form narrow" onSubmit={submit}>
       <h2>{id ? "Edit job" : "Post a job"}</h2>
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <p className="error" role="alert">
+          {error}
+        </p>
+      )}
       <label>
         Job title
         <input required value={form.title} onChange={set("title")} />
